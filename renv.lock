@@ -2130,6 +2130,29 @@
       ],
       "Hash": "a584625e2b9e4fad4be135c8ea5c99aa"
     },
+    "spatialsample": {
+      "Package": "spatialsample",
+      "Version": "0.5.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "cpp11",
+        "dplyr",
+        "ggplot2",
+        "glue",
+        "purrr",
+        "rlang",
+        "rsample",
+        "sf",
+        "stats",
+        "tibble",
+        "tidyselect",
+        "units",
+        "vctrs"
+      ],
+      "Hash": "d525ec52c0708b331c457572120d92b6"
+    },
     "stringi": {
       "Package": "stringi",
       "Version": "1.8.3",
