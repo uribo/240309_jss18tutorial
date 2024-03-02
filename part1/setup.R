@@ -1,5 +1,8 @@
 # tidymodels --------------------------------------------------------------
 library(tidymodels)
+# library(censored) # 生存時間解析のためのparsnipの拡張（扱わない）
+library(tidyclust) # クラスタリングのためのparsnipの拡張
+library(bonsai) # 木モデルのためのparsnipの拡張
 
 
 # mlr ---------------------------------------------------------------------
@@ -21,3 +24,6 @@ apartments_lm_exp <- explain(model = apartments_lm,
                              data = apartments_test[,-1],
                              y = apartments_test$m2.price,
                              label = "Linear Regression")
+
+# x <- predict_parts(...)
+# plot(x)

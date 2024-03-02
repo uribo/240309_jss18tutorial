@@ -135,6 +135,71 @@
       ],
       "Hash": "5ea2700d21e038ace58269ecdbeb9ec0"
     },
+    "RcppArmadillo": {
+      "Package": "RcppArmadillo",
+      "Version": "0.12.8.0.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "Rcpp",
+        "methods",
+        "stats",
+        "utils"
+      ],
+      "Hash": "847fc78bd9f83f55696b4b016482f7ed"
+    },
+    "RcppGSL": {
+      "Package": "RcppGSL",
+      "Version": "0.3.13",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "Rcpp",
+        "stats"
+      ],
+      "Hash": "e8fc7310d256a7b6c4de8e57ab76c55d"
+    },
+    "RcppParallel": {
+      "Package": "RcppParallel",
+      "Version": "5.1.7",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "a45594a00f5dbb073d5ec9f48592a08a"
+    },
+    "RcppZiggurat": {
+      "Package": "RcppZiggurat",
+      "Version": "0.1.6",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "Rcpp",
+        "RcppGSL",
+        "graphics",
+        "parallel",
+        "stats",
+        "utils"
+      ],
+      "Hash": "75b4a36aeeed440ad03b996081190703"
+    },
+    "Rfast": {
+      "Package": "Rfast",
+      "Version": "2.1.0",
+      "Source": "Repository",
+      "Repository": "https://packagemanager.posit.co/cran/2023-12-06",
+      "Requirements": [
+        "R",
+        "Rcpp",
+        "RcppArmadillo",
+        "RcppParallel",
+        "RcppZiggurat"
+      ],
+      "Hash": "79e8394e1fa06a4ae954b70ca9b16e8f"
+    },
     "RhpcBLASctl": {
       "Package": "RhpcBLASctl",
       "Version": "0.23-42",
@@ -217,6 +282,25 @@
         "vctrs"
       ],
       "Hash": "40415719b5a479b87949f3aa0aee737c"
+    },
+    "bonsai": {
+      "Package": "bonsai",
+      "Version": "0.2.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "cli",
+        "dials",
+        "dplyr",
+        "glue",
+        "parsnip",
+        "purrr",
+        "rlang",
+        "stats",
+        "tibble",
+        "utils"
+      ],
+      "Hash": "c086fa23dfeac2d2b95f758dfa917c3d"
     },
     "broom": {
       "Package": "broom",
@@ -635,6 +719,25 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "f7736a18de97dea803bde0a2daaafb27"
+    },
+    "flexclust": {
+      "Package": "flexclust",
+      "Version": "1.4-1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "class",
+        "graphics",
+        "grid",
+        "lattice",
+        "methods",
+        "modeltools",
+        "parallel",
+        "stats",
+        "stats4"
+      ],
+      "Hash": "5119656cf1990993d4100e5e407f90ac"
     },
     "fontawesome": {
       "Package": "fontawesome",
@@ -1392,6 +1495,18 @@
       ],
       "Hash": "4f50122dc256b1b6996a4703fecea821"
     },
+    "modeltools": {
+      "Package": "modeltools",
+      "Version": "0.2-23",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "methods",
+        "stats",
+        "stats4"
+      ],
+      "Hash": "f5a957c02222589bdf625a67be68b2a9"
+    },
     "munsell": {
       "Package": "munsell",
       "Version": "0.5.0",
@@ -2109,6 +2224,36 @@
         "vctrs"
       ],
       "Hash": "a84e2cc86d07289b3b6f5069df7a004c"
+    },
+    "tidyclust": {
+      "Package": "tidyclust",
+      "Version": "0.2.0",
+      "Source": "Repository",
+      "Repository": "https://packagemanager.posit.co/cran/2023-12-06",
+      "Requirements": [
+        "R",
+        "Rfast",
+        "cli",
+        "dials",
+        "dplyr",
+        "flexclust",
+        "foreach",
+        "generics",
+        "glue",
+        "hardhat",
+        "modelenv",
+        "parsnip",
+        "prettyunits",
+        "rlang",
+        "rsample",
+        "stats",
+        "tibble",
+        "tidyr",
+        "tune",
+        "utils",
+        "vctrs"
+      ],
+      "Hash": "f59c0487b2ed1df49863c425b7c4b416"
     },
     "tidymodels": {
       "Package": "tidymodels",
