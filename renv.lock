@@ -190,7 +190,7 @@
       "Package": "Rfast",
       "Version": "2.1.0",
       "Source": "Repository",
-      "Repository": "https://packagemanager.posit.co/cran/2023-12-06",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "Rcpp",
@@ -2250,9 +2250,9 @@
     },
     "tidyclust": {
       "Package": "tidyclust",
-      "Version": "0.2.0",
+      "Version": "0.2.1",
       "Source": "Repository",
-      "Repository": "https://packagemanager.posit.co/cran/2023-12-06",
+      "Repository": "CRAN",
       "Requirements": [
         "R",
         "Rfast",
@@ -2276,7 +2276,7 @@
         "utils",
         "vctrs"
       ],
-      "Hash": "f59c0487b2ed1df49863c425b7c4b416"
+      "Hash": "2179d25d6eae0336f59021e34989a689"
     },
     "tidymodels": {
       "Package": "tidymodels",
