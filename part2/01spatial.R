@@ -11,15 +11,15 @@ landprice$geometry[1]
 
 mapview(landprice)
 mapview(landprice,
-        zcol = "price",
+        zcol = "gas",
         alpha.regions = 0.3,
         cex = 2.6,
         lwd = 0.4,
         legend = FALSE)
 
-landprice |>
-  filter(price > 1000000) |>
-  mapview(zcol = "price")
+# landprice |>
+#   filter(price > 1000000) |>
+#   mapview(zcol = "price")
 
 landprice <-
   landprice |>
@@ -38,15 +38,15 @@ set.seed(123)
 lp_folds <-
   vfold_cv(lp_train, v = 10, strata = gas)
 
-mapview(training(lp_folds$splits[[1]]), col.regions = "#3A5BA0") +
-  mapview(testing(lp_folds$splits[[1]]), col.regions = "#FFA500")
+mapview(analysis(lp_folds$splits[[1]]), col.regions = "#3A5BA0") +
+  mapview(assessment(lp_folds$splits[[1]]), col.regions = "#FFA500")
 
 lp_folds$splits |>
   purrr::map(
     function(x) {
       ggplot() +
-        geom_sf(data = training(x), color = "#3A5BA0", alpha = 0.5) +
-        geom_sf(data = testing(x), color = "#FFA500", alpha = 0.5)
+        geom_sf(data = analysis(x), color = "#3A5BA0", alpha = 0.5) +
+        geom_sf(data = assessment(x), color = "#FFA500", alpha = 0.5)
     }
   ) |>
   patchwork::wrap_plots(ncol = 5)
@@ -61,8 +61,8 @@ folds$splits |>
   purrr::map(
     function(x) {
       ggplot() +
-        geom_sf(data = training(x), color = "#3A5BA0", alpha = 0.5) +
-        geom_sf(data = testing(x), color = "#FFA500", alpha = 0.5)
+        geom_sf(data = analysis(x), color = "#3A5BA0", alpha = 0.5) +
+        geom_sf(data = assessment(x), color = "#FFA500", alpha = 0.5)
     }
   ) |>
   patchwork::wrap_plots(ncol = 5)
