@@ -51,7 +51,8 @@ landprice <-
             "周辺の土地利用の状況",
             "建ぺい率",
             "容積率",
-            num_range("調査価格_", 1983:2020), starts_with("属性移動")))
+            num_range("調査価格_", 1983:2020), starts_with("属性移動"))) |>
+  st_transform(crs = 4326)
 
 # glimpse(landprice)
 
