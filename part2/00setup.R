@@ -1,4 +1,4 @@
 library(sf)
 library(tidyverse)
-library(recipes)
+library(tidymodels)
 library(spatialsample)
