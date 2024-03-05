@@ -1,12 +1,37 @@
-# landprice_raw <- kuniumi::read_ksj_l02(.year = 2020, .pref_code = 13, .download = TRUE)
-# fs::file_move("L02-20_13_GML", here::here("data-raw/L02-20_13_GML"))
 library(tidyverse)
+library(kuniumi)
+library(sf)
+if (length(list.files(here::here("data-raw"), recursive = TRUE, pattern = ".geojson$")) != 7L) {
+  seq.int(8, 14) |>
+    purrr::walk(
+      function(x) {
+        x <- sprintf("%02d", x)
+        download.file(
+          url = kuniumi:::zip_l02_url(year = 2020, pref_code = x),
+          destfile = here::here(glue::glue("data-raw/L02-20_{x}_GML.zip"))
+        )
+        unzip(
+          zipfile = here::here(glue::glue("data-raw/L02-20_{x}_GML.zip")),
+          exdir = here::here(glue::glue("data-raw/L02-20_{x}_GML"))
+        )
+        }
+    )
+}
+
 landprice_raw <-
-  kuniumi::read_ksj_l02(here::here("data-raw/L02-20_13_GML/L02-20_13.geojson"),
-                      .year = 2020)
+  seq.int(8, 14) |>
+  purrr::map(
+    function(x) {
+      x <- sprintf("%02d", x)
+      read_ksj_l02(here::here(glue::glue("data-raw/L02-20_{x}_GML/L02-20_{x}.geojson")),
+                   .year = 2020)
+    }
+  ) |>
+  bind_rows()
+
 landprice <-
   landprice_raw |>
-  sf::st_drop_geometry() |>
+  filter(!`基準地行政区域コード` %in% c("13361", "13362", "13363", "13364", "13381", "13382", "13401", "13402", "13421", "13900")) |>
   select(!c(contains("前年度基準地コード"),
             "基準地コード_見出し番号",
             "年度",
@@ -47,9 +72,13 @@ landprice <-
                      "above_floor",
                      "under_floor",
                      "dist_from_st",
-                     "use_type", "fire", "city_plan"))
+                     "use_type", "fire", "city_plan",
+                     "geometry"))
 
 # 供用状況
 lp_supply <-
   landprice |>
-  select(price, water, gas, sewer, above_floor, under_floor, dist_from_st, fire)
+  st_drop_geometry() |>
+  select(price, water, gas, sewer, above_floor, under_floor, dist_from_st, fire) |>
+  mutate(gas = as.factor(gas)) |>
+  filter(!is.na(fire))

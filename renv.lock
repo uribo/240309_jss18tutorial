@@ -251,7 +251,7 @@
       "Package": "Rfast",
       "Version": "2.1.0",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/2023-12-06",
       "Requirements": [
         "R",
         "Rcpp",
@@ -1185,17 +1185,6 @@
       ],
       "Hash": "e0b3a53876554bd45879e596cdb10a52"
     },
-    "googlePolylines": {
-      "Package": "googlePolylines",
-      "Version": "0.8.4",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "BH",
-        "Rcpp"
-      ],
-      "Hash": "d01f12d522d359286ac745c815dd8201"
-    },
     "googledrive": {
       "Package": "googledrive",
       "Version": "2.1.1",
@@ -1583,32 +1572,6 @@
       ],
       "Hash": "3239dcf8afc46d13583f45cb4d92c1b6"
     },
-    "jpndistrict": {
-      "Package": "jpndistrict",
-      "Version": "0.3.9.9000",
-      "Source": "git",
-      "RemoteType": "git",
-      "RemoteUrl": "git@github.com:uribo/jpndistrict.git",
-      "RemoteRef": "",
-      "Requirements": [
-        "R",
-        "curl",
-        "dplyr",
-        "googlePolylines",
-        "jpmesh",
-        "leaflet",
-        "magrittr",
-        "memoise",
-        "miniUI",
-        "purrr",
-        "rlang",
-        "sf",
-        "shiny",
-        "tibble",
-        "tidyselect"
-      ],
-      "Hash": "cb57b365e199627ea1847e8b8be290c3"
-    },
     "jquerylib": {
       "Package": "jquerylib",
       "Version": "0.1.4",
@@ -1663,11 +1626,8 @@
     "kuniumi": {
       "Package": "kuniumi",
       "Version": "0.0.0.9000",
-      "Source": "git",
-      "RemoteType": "git",
-      "RemoteUrl": "git@github.com:uribo/kuniumi.git",
-      "RemoteRef": "",
-      "Remotes": "uribo/jpndistrict",
+      "Source": "Repository",
+      "Repository": "CRAN",
       "Requirements": [
         "R",
         "cli",
@@ -1676,7 +1636,6 @@
         "glue",
         "httr",
         "jpmesh",
-        "jpndistrict",
         "kokudosuuchi",
         "lubridate",
         "magrittr",
@@ -1692,7 +1651,7 @@
         "xml2",
         "zipangu"
       ],
-      "Hash": "1c233cb3165827c118b58f001f35f5a5"
+      "Hash": "497e647be6ee8d157d8b6306ef6abc08"
     },
     "labeling": {
       "Package": "labeling",
@@ -2799,7 +2758,7 @@
       "Package": "rstanarm",
       "Version": "2.26.1",
       "Source": "Repository",
-      "Repository": "https://packagemanager.posit.co/cran/2023-11-02",
+      "Repository": "RSPM",
       "Requirements": [
         "BH",
         "Matrix",

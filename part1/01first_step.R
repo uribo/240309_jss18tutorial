@@ -19,9 +19,6 @@ lp_supply |> count(gas)
 #   filter(price < 64e3) |>
 #   count(gas)
 
-lp_supply <-
-  lp_supply |>
-  mutate(gas = as.factor(gas))
 
 # rsample -----------------------------------------------------------------
 set.seed(123)
@@ -72,11 +69,9 @@ lp_wflow <-
   add_model(tree_spec)
 lp_wflow |>
   fit(data = lp_train)
-
 tree_fit <-
   workflow(gas ~ ., spec = tree_spec) |>
   fit(data = lp_train)
-
 # テストデータに対する予測
 predict(tree_fit, new_data = lp_test) |>
   count(.pred_class)

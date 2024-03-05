@@ -4,6 +4,7 @@ augment(tree_fit, new_data = lp_train) |>
   relocate(gas, .pred_class, .pred_TRUE, .pred_FALSE)
 # confusion matrix
 augment(tree_fit, new_data = lp_train) |>
+  # select(gas, .pred_class) |>
   conf_mat(truth = gas, estimate = .pred_class) |>
   autoplot("heatmap")
 # accurary
@@ -78,26 +79,6 @@ rf_spec <-
   set_engine("ranger")
 rf_wflow <-
   workflow(gas ~ ., rf_spec)
-fit_resamples(rf_wflow, lp_folds, control = ctrl_lp)
-
-lp_rf_rec <-
-  recipe(gas ~ ., data = lp_train) |>
-  step_naomit(all_predictors())
-
-nrow(lp_train)
-lp_train |>
-  filter(is.na(fire))
-lp_train |> count(fire)
-
-lp_rf_rec |>
-  prep() |>
-  bake(new_data = lp_train) |>
-  nrow()
-
-rf_wflow <-
-  workflow() |>
-  add_recipe(lp_rf_rec) |>
-  add_model(rf_spec)
 rf_res <-
   fit_resamples(rf_wflow, lp_folds, control = ctrl_lp)
 collect_metrics(rf_res)
@@ -109,4 +90,4 @@ extract_workflow(final_fit)
 
 collect_predictions(final_fit) |>
   group_by(id) |>
-  taxi_metrics(truth = gas, estimate = .pred_class)
+  lp_metrics(truth = gas, estimate = .pred_class)
