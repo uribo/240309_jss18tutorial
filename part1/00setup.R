@@ -15,8 +15,7 @@ library(bonsai) # 木モデルのためのparsnipの拡張
 # library(themis)
 
 # mlr ---------------------------------------------------------------------
-library(mlr3)
-
+library(mlr3verse)
 
 # DALEX -------------------------------------------------------------------
 library(DALEX)
