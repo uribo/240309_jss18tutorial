@@ -2,7 +2,10 @@
 # ハイパーパラメータ
 # tune
 rf_spec <-
-  rand_forest(min_n = tune(), mode = "classification")
+  rand_forest(min_n = tune(),
+              trees = tune(),
+              mode = "classification") |>
+  set_engine("randomForest")
 
 rf_wflow <-
   workflow(gas ~ ., rf_spec)

@@ -1,7 +1,7 @@
-source(here::here("part2/01spatial.R"))
+# source(here::here("part2/01spatial.R"))
 rf_spec <-
   rand_forest(trees = 1000, mode = "classification") |>
-  set_engine("ranger")
+  set_engine("randomForest")
 rf_wflow <-
   workflow(gas ~ price + water + sewer + above_floor + under_floor + dist_from_st + fire, rf_spec)
 ctrl_lp <-

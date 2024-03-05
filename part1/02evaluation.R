@@ -76,7 +76,7 @@ lp_preds |>
 # ランダムフォレスト
 rf_spec <-
   rand_forest(trees = 1000, mode = "classification") |>
-  set_engine("ranger")
+  set_engine("randomForest")
 rf_wflow <-
   workflow(gas ~ ., rf_spec)
 rf_res <-
