@@ -1,7 +1,15 @@
+library(tidyverse)
 library(mlr3verse)
 mlr3verse_info()
 library(randomForest)
 library(GGally)
+library(conflicted)
+conflict_scout()
+conflict_prefer("filter", "dplyr")
+conflict_prefer("lag", "dplyr")
+conflict_prefer("combine", "randomForest")
+conflict_prefer("explain", "DALEX")
+source(here::here("data-raw/lp.R"))
 
 # 1. Tasks ----------------------------------------------------------------
 # データセット、扱う問題の種類（Target, Properties）を指定
@@ -11,15 +19,19 @@ task <-
   tsk("penguins")
 task$properties
 task$class_names
-
-
 mlr_tasks$get("penguins")
 task$data(rows = c(1, 5, 10), cols = task$feature_names) # data.table
 
 # autoplot(task, type = "pairs")
 
-# as_task_classif(penguins, target = "species")
+lp_supply <-
+  lp_supply |>
+  mutate(across(where(is.character), as.factor))
 
+# 自前のタスクを定義
+lp_task <-
+  as_task_classif(lp_supply, target = "gas")
+lp_task
 
 # 2. learners -------------------------------------------------------------
 # 学習モデルに関する情報（アルゴリズム、パラメータ、パッケージなど）
@@ -33,16 +45,16 @@ learner <-
 learner$param_set$values
 
 split <-
-  partition(task)
+  partition(lp_task)
 names(split)
 
 
 # 学習器を用いて学習を実行する
-learner$train(task, row_ids = split$train)
+learner$train(lp_task, row_ids = split$train)
 learner$model
 
 prediction <-
-  learner$predict(task, row_ids = split$test)
+  learner$predict(lp_task, row_ids = split$test)
 prediction
 
 # autoplot(prediction)
@@ -61,6 +73,22 @@ prediction$score(msr("classif.ce"))
 
 measures <- msrs(c("classif.acc", "classif.ce"))
 prediction$score(measures)
+
+# モデルの解釈
+# 1. 変数重要度
+# library(iml)
+library(DALEX)
+exp <-
+  explain(learner,
+          data = lp_task$data(),
+          y = as.numeric(lp_task$truth()),
+          label = "rpart_classif")
+
+exp <-
+  DALEXtra::explain_mlr3(learner, data = lp_task$data(),
+             y = as.numeric(lp_task$truth()))
+
+model_performance(exp)
 
 # 4. Resampling -----------------------------------------------------------
 # mlr_resamplings
