@@ -5,6 +5,18 @@
       {
         "Name": "CRAN",
         "URL": "https://packagemanager.posit.co/cran/latest"
+      },
+      {
+        "Name": "uribo",
+        "URL": "https://uribo.r-universe.dev"
+      },
+      {
+        "Name": "r-spatial",
+        "URL": "https://r-spatial.r-universe.dev"
+      },
+      {
+        "Name": "mlr-org",
+        "URL": "https://mlr-org.r-universe.dev"
       }
     ]
   },
@@ -286,7 +298,7 @@
       "Package": "Rfast",
       "Version": "2.1.0",
       "Source": "Repository",
-      "Repository": "https://packagemanager.posit.co/cran/2023-12-06",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "Rcpp",
@@ -3062,6 +3074,17 @@
       ],
       "Hash": "90a1b8b7e518d7f90480d56453b4d062"
     },
+    "randomForest": {
+      "Package": "randomForest",
+      "Version": "4.7-1.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "stats"
+      ],
+      "Hash": "b52825075358b1ebd159e262bf40649d"
+    },
     "ranger": {
       "Package": "ranger",
       "Version": "0.16.0",
@@ -3375,7 +3398,7 @@
       "Package": "rstanarm",
       "Version": "2.26.1",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/2023-11-02",
       "Requirements": [
         "BH",
         "Matrix",

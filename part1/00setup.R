@@ -14,9 +14,6 @@ library(bonsai) # 木モデルのためのparsnipの拡張
 # library(textrecipes)
 # library(themis)
 
-# mlr ---------------------------------------------------------------------
-library(mlr3verse)
-
 # DALEX -------------------------------------------------------------------
 library(DALEX)
 apartments_lm <- lm(m2.price ~ ., data = apartments)

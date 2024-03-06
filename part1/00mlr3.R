@@ -1,7 +1,7 @@
-library(mlr3)
+library(mlr3verse)
+mlr3verse_info()
+library(randomForest)
 library(GGally)
-glimpse(penguins)
-
 
 # 1. Tasks ----------------------------------------------------------------
 # データセット、扱う問題の種類（Target, Properties）を指定
@@ -65,7 +65,7 @@ prediction$score(measures)
 # 4. Resampling -----------------------------------------------------------
 # mlr_resamplings
 as.data.table(mlr_resamplings) |>
-  as_tibble() |> View()
+  as_tibble()
 
 # 2回の繰り返し、5分割交差検証
 rcv25 <-
@@ -83,17 +83,15 @@ autoplot(rr, measure = msr("classif.acc"), type = "boxplot")
 
 # 5. Tuning ----------------------------------------------------------------
 library(mlr3extralearners)
-library(paradox)
 lrn()
 
 lrn("classif.ksvm")$param_set |>
-  as.data.table() |> View()
+  as.data.table()
 learner <- lrn("classif.randomForest",
                ntree = to_tune(500, 2000),
                mtry = to_tune(1, 50))
 learner$param_set$ids()
 
-library(mlr3tuning)
 instance = ti(
   task = task,
   learner = learner,
