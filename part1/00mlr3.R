@@ -137,6 +137,7 @@ instance <- ti(
   measures = lp_metrics_mlr,
   terminator = trm("none"))
 tnr("random_search")
+# autoplot(instance, type = "surface")
 
 lp_tuner <- tnr("grid_search", resolution = 5, batch_size = 10)
 lp_tuner

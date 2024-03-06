@@ -16,13 +16,11 @@ collect_predictions(rf_fit_rs_spcluster) |>
   lp_metrics(truth = gas, estimate = .pred_class)
 
 # mlr ---------------------------------------------------------------------
+library(mlr3verse)
 library(mlr3spatiotempcv)
-task <- as_task_classif_st(lp_train,
-                        target = "gas",
-                        positive = "TRUE")
-learner <- mlr3::lrn("classif.ranger")
-resampling = mlr3::rsmp("repeated_spcv_coords", folds = 5, repeats = 100)
-
-rr_spcv_rf = mlr3::resample(task = task,
-                             learner = learner,
-                             resampling = resampling)
+targets::tar_load(names = c(lpsp_task, lpsp_folds_mlr))
+learner <- lrn("classif.ranger")
+rr_spcv_rf <- resample(task = lpsp_task,
+                       learner = learner,
+                       resampling = lpsp_folds_mlr)
+rr_spcv_rf$aggregate(measures = msr("classif.acc"))

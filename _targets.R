@@ -292,11 +292,27 @@ part2_tm <-
     )
   )
 
+part2_mlr <-
+  list(
+    tar_target(
+      lpsp_task,
+      as_task_classif_st(lpsp_train,
+                         target = "gas",
+                         positive = "TRUE"),
+      packages = "mlr3spatiotempcv"
+    ),
+    tar_target(
+      lpsp_folds_mlr,
+      rsmp("repeated_spcv_coords", folds = 5, repeats = 100)
+    )
+  )
+
 list(
   lp_data,
   part1_tm,
   part1_mlr,
-  part2_tm
+  part2_tm,
+  part2_mlr
 )
 
 # targets::tar_make()
