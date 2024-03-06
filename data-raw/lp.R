@@ -1,6 +1,3 @@
-library(tidyverse)
-library(kuniumi)
-library(sf)
 if (length(list.files(here::here("data-raw"), recursive = TRUE, pattern = ".geojson$")) != 7L) {
   seq.int(8, 14) |>
     purrr::walk(
@@ -18,16 +15,20 @@ if (length(list.files(here::here("data-raw"), recursive = TRUE, pattern = ".geoj
     )
 }
 
-landprice_raw <-
+targets::tar_load(names = c(landprice_raw, landprice))
+
+identical(
   seq.int(8, 14) |>
-  purrr::map(
-    function(x) {
-      x <- sprintf("%02d", x)
-      read_ksj_l02(here::here(glue::glue("data-raw/L02-20_{x}_GML/L02-20_{x}.geojson")),
-                   .year = 2020)
-    }
-  ) |>
-  bind_rows()
+    purrr::map(
+      function(x) {
+        x <- sprintf("%02d", x)
+        read_ksj_l02(here::here(glue::glue("data-raw/L02-20_{x}_GML/L02-20_{x}.geojson")),
+                     .year = 2020)
+      }
+    ) |>
+    bind_rows(),
+  landprice_raw
+)
 
 landprice <-
   landprice_raw |>
