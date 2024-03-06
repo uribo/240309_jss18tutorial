@@ -4,45 +4,31 @@ library(sf)
 library(mapview)
 library(ggplot2)
 library(patchwork)
-library(spatialsample)
-targets::tar_load(names = c(landprice, lp_supply))
+targets::tar_load(names = c(lp_supply_sf))
 
-class(landprice)
-landprice$geometry[1]
+class(lp_supply_sf)
+lp_supply_sf$geometry[1]
 
-mapview(landprice)
-mapview(landprice,
+mapview(lp_supply_sf)
+mapview(lp_supply_sf,
         zcol = "gas",
         alpha.regions = 0.3,
         cex = 2.6,
         lwd = 0.4,
         legend = FALSE)
 
-# landprice |>
+# lp_supply_sf |>
 #   filter(price > 1000000) |>
 #   mapview(zcol = "price")
 
-landprice <-
-  landprice |>
-  select(names(lp_supply)) |>
-  mutate(gas = as.factor(gas)) |>
-  filter(!is.na(fire))
-
 # Normal sample -----------------------------------------------------------
 # ref) part1/01first_step.R
-set.seed(123)
-lp_split <-
-  initial_split(landprice, prop = 0.8, strata = gas)
-lp_train <- training(lp_split)
-lp_test <- testing(lp_split)
-set.seed(123)
-lp_folds <-
-  vfold_cv(lp_train, v = 10, strata = gas)
+targets::tar_load(lpsp_folds)
 
-mapview(analysis(lp_folds$splits[[1]]), col.regions = "#3A5BA0") +
-  mapview(assessment(lp_folds$splits[[1]]), col.regions = "#FFA500")
+mapview(analysis(lpsp_folds$splits[[1]]), col.regions = "#3A5BA0") +
+  mapview(assessment(lpsp_folds$splits[[1]]), col.regions = "#FFA500")
 
-lp_folds$splits |>
+lpsp_folds$splits |>
   purrr::map(
     function(x) {
       ggplot() +
@@ -53,12 +39,10 @@ lp_folds$splits |>
   patchwork::wrap_plots(ncol = 5)
 
 # Spatial sample ----------------------------------------------------------
-set.seed(123)
-folds <-
-  spatial_clustering_cv(lp_train, v = 10)
-autoplot(folds)
+targets::tar_load(names = c(lpsp_folds_cluster, lpsp_folds_block))
+autoplot(lpsp_folds_cluster)
 
-folds$splits |>
+lpsp_folds_cluster$splits |>
   purrr::map(
     function(x) {
       ggplot() +
@@ -68,7 +52,4 @@ folds$splits |>
   ) |>
   patchwork::wrap_plots(ncol = 5)
 
-set.seed(123)
-folds <-
-  spatial_block_cv(lp_train, v = 10)
-autoplot(folds$splits[[1]])
+autoplot(lpsp_folds_cluster$splits[[1]])

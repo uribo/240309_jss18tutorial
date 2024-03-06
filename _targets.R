@@ -3,7 +3,8 @@ source(here::here("data-raw/lp.R"))
 tar_option_set(
   packages = c("tidyverse", "conflicted",
                "tidymodels",
-               "mlr3verse", "paradox"),
+               "mlr3verse", "paradox",
+               "sf", "spatialsample"),
   seed = 123)
 conflicted::conflict_prefer("filter", "dplyr")
 
@@ -66,6 +67,13 @@ lp_data <-
                       dist_from_st, fire) |>
         dplyr::mutate(gas = as.factor(gas)) |>
         dplyr::filter(!is.na(fire))
+    ),
+    tar_target(
+      lp_supply_sf,
+      landprice |>
+        select(names(lp_supply)) |>
+        mutate(gas = as.factor(gas)) |>
+        filter(!is.na(fire))
     )
   )
 
@@ -148,7 +156,8 @@ part1_tm <-
     ),
     tar_target(
       rf_wflow,
-      workflow(gas ~ ., rf_spec)
+      workflow(gas ~ price + water + sewer + above_floor + under_floor + dist_from_st + fire,
+               rf_spec)
     ),
     tar_target(
       rf_fit_resample_res,
@@ -231,10 +240,63 @@ part1_mlr <-
     )
   )
 
+part2_tm <-
+  list(
+    tar_target(
+      lpsp_split,
+      {
+        set.seed(123)
+        initial_split(lp_supply_sf, prop = 0.8, strata = gas)
+      }
+    ),
+    tar_target(
+      lpsp_train,
+      training(lpsp_split)
+    ),
+    tar_target(
+      lpsp_test,
+      testing(lpsp_split)
+    ),
+    tar_target(
+      lpsp_folds,
+      {
+        set.seed(123)
+        vfold_cv(lpsp_train, v = 10, repeats = 1, strata = gas)
+      }
+    ),
+    tar_target(
+      lpsp_folds_cluster,
+      {
+        set.seed(123)
+        spatial_clustering_cv(lpsp_train, v = 10)
+      }
+    ),
+    tar_target(
+      lpsp_folds_block,
+      {
+        set.seed(123)
+        spatial_block_cv(lpsp_train, v = 10)
+      }
+    ),
+    tar_target(
+      rf_fit_resample_res_sp,
+      fit_resamples(rf_wflow, lpsp_folds, control = lp_ctrl)
+    ),
+    tar_target(
+      lpsp_final_fit,
+      last_fit(rf_wflow, lpsp_split)
+    ),
+    tar_target(
+      rf_fit_rs_spcluster,
+      fit_resamples(rf_wflow, lpsp_folds_cluster, control = lp_ctrl)
+    )
+  )
+
 list(
   lp_data,
   part1_tm,
-  part1_mlr
+  part1_mlr,
+  part2_tm
 )
 
 # targets::tar_make()

@@ -1,36 +1,19 @@
-# source(here::here("part2/01spatial.R"))
-rf_spec <-
-  rand_forest(trees = 1000, mode = "classification") |>
-  set_engine("randomForest")
-rf_wflow <-
-  workflow(gas ~ price + water + sewer + above_floor + under_floor + dist_from_st + fire, rf_spec)
-ctrl_lp <-
-  control_resamples(save_pred = TRUE)
+library(tidymodels)
+tidymodels_prefer()
+targets::tar_load(names = c(lp_metrics, rf_fit_resample_res_sp, lpsp_final_fit))
+collect_metrics(rf_fit_resample_res_sp)
+collect_metrics(lpsp_final_fit)
+show_best(lpsp_final_fit, metric = "accuracy")
 
-rf_res <-
-  fit_resamples(rf_wflow, lp_folds, control = ctrl_lp)
-collect_metrics(rf_res)
-final_fit <-
-  last_fit(rf_wflow, lp_split)
-collect_metrics(final_fit)
-show_best(final_fit, metric = "accuracy")
-
-lp_metrics <-
-  metric_set(accuracy, sensitivity, specificity)
-
-collect_predictions(final_fit) |>
+collect_predictions(rf_fit_resample_res_sp) |>
   group_by(id) |>
   lp_metrics(truth = gas, estimate = .pred_class)
 
-####
-rf_res <-
-  fit_resamples(rf_wflow, folds, control = ctrl_lp)
-collect_metrics(rf_res)
-final_fit <-
-  last_fit(rf_wflow, lp_split)
-collect_metrics(final_fit)
-show_best(final_fit, metric = "accuracy")
-
+targets::tar_load(rf_fit_rs_spcluster)
+collect_metrics(rf_fit_rs_spcluster)
+collect_predictions(rf_fit_rs_spcluster) |>
+  group_by(id) |>
+  lp_metrics(truth = gas, estimate = .pred_class)
 
 # mlr ---------------------------------------------------------------------
 library(mlr3spatiotempcv)
