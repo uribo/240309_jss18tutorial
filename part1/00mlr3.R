@@ -9,7 +9,7 @@ conflict_prefer("filter", "dplyr")
 conflict_prefer("lag", "dplyr")
 conflict_prefer("combine", "randomForest")
 conflict_prefer("explain", "DALEX")
-source(here::here("data-raw/lp.R"))
+targets::tar_load(names = c(lp_supply))
 
 # 1. Tasks ----------------------------------------------------------------
 # データセット、扱う問題の種類（Target, Properties）を指定

@@ -5,7 +5,7 @@ library(mapview)
 library(ggplot2)
 library(patchwork)
 library(spatialsample)
-source(here::here("data-raw/lp.R"))
+targets::tar_load(names = c(landprice, lp_supply))
 
 class(landprice)
 landprice$geometry[1]
