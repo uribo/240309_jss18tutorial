@@ -1,8 +1,11 @@
 library(targets)
 source(here::here("data-raw/lp.R"))
 tar_option_set(
-  packages = c("tidyverse", "conflicted", "tidymodels", "mlr3verse", "paradox"),
+  packages = c("tidyverse", "conflicted",
+               "tidymodels",
+               "mlr3verse", "paradox"),
   seed = 123)
+conflicted::conflict_prefer("filter", "dplyr")
 
 lp_data <-
   list(
