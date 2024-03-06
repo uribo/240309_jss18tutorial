@@ -6,5 +6,3 @@ x <-
 png("images/qrcode.png", width = 200, height = 200, res = 96)
 plot(x)
 dev.off()
-
-

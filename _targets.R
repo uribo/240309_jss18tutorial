@@ -66,7 +66,7 @@ lp_data <-
     )
   )
 
-tm <-
+part1_tm <-
   list(
     tar_target(
       lp_split,
@@ -117,7 +117,8 @@ tm <-
     ),
     tar_target(
       lp_folds,
-      vfold_cv(lp_train, v = 10, strata = gas)
+      # 2回の繰り返し、10分割交差検証
+      vfold_cv(lp_train, v = 10, repeats = 2, strata = gas)
     ),
     tar_target(
       lp_fit_resample_res,
@@ -138,7 +139,8 @@ tm <-
     ),
     tar_target(
       rf_spec,
-      rand_forest(trees = 1000, mode = "classification") |>
+      rand_forest(trees = 1000,
+                  mode = "classification") |>
         set_engine("randomForest")
     ),
     tar_target(
@@ -190,7 +192,7 @@ tm <-
 
 list(
   lp_data,
-  tm
+  part1_tm
 )
 
 # targets::tar_make()

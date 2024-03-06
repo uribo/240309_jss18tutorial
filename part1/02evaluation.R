@@ -1,11 +1,10 @@
 library(tidymodels)
 tidymodels_prefer()
-library(tidyverse)
 library(conflicted)
 targets::tar_load(names = c(lp_train, lp_test, tree_fit, lp_metrics, lp_folds))
 # yardstick ---------------------------------------------------------------
 augment(tree_fit, new_data = lp_train) |>
-  relocate(gas, .pred_class, .pred_TRUE, .pred_FALSE)
+  dplyr::relocate(gas, .pred_class, .pred_TRUE, .pred_FALSE)
 # confusion matrix
 augment(tree_fit, new_data = lp_train) |>
   # select(gas, .pred_class) |>
