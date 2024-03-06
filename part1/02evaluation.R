@@ -1,4 +1,8 @@
-# source(here::here("part1/01first_step.R"))
+library(tidymodels)
+tidymodels_prefer()
+library(tidyverse)
+library(conflicted)
+targets::tar_load(names = c(lp_train, lp_test, tree_fit, lp_metrics, lp_folds))
 # yardstick ---------------------------------------------------------------
 augment(tree_fit, new_data = lp_train) |>
   relocate(gas, .pred_class, .pred_TRUE, .pred_FALSE)
@@ -16,7 +20,6 @@ augment(tree_fit, new_data = lp_train) |>
 augment(tree_fit, new_data = lp_train) |>
   specificity(truth = gas, estimate = .pred_class)
 
-lp_metrics <- metric_set(accuracy, sensitivity, specificity)
 class(lp_metrics)
 augment(tree_fit, new_data = lp_train) |>
   lp_metrics(truth = gas, estimate = .pred_class)
@@ -48,46 +51,29 @@ tree_fit |>
   brier_class(truth = gas, .pred_FALSE)
 
 # 交差検証法の導入
-lp_folds <-
-  vfold_cv(lp_train, v = 10, strata = gas)
 lp_folds$splits[1:3]
 
-lp_res <-
-  fit_resamples(lp_wflow, lp_folds)
-lp_res
-lp_res |>
+targets::tar_load(names = c(tree_wflow, lp_fit_resample_res, lp_ctrl))
+# tree_wflow
+lp_fit_resample_res |>
   collect_metrics() |>
   select(.metric, mean, n)
 
 # 性能評価
-ctrl_lp <-
-  control_resamples(save_pred = TRUE)
-lp_res <-
-  fit_resamples(lp_wflow, lp_folds, control = ctrl_lp)
-lp_preds <-
-  lp_res |>
-  collect_predictions()
-lp_preds
+targets::tar_load(names = c(lp_preds))
 lp_preds |>
   group_by(id) |>
   lp_metrics(truth = gas, estimate = .pred_class)
-# rm(lp_res)
+# rm(lp_fit_resample_res_ctrl)
 
 # ランダムフォレスト
-rf_spec <-
-  rand_forest(trees = 1000, mode = "classification") |>
-  set_engine("randomForest")
-rf_wflow <-
-  workflow(gas ~ ., rf_spec)
-rf_res <-
-  fit_resamples(rf_wflow, lp_folds, control = ctrl_lp)
-collect_metrics(rf_res)
-final_fit <-
-  last_fit(rf_wflow, lp_split)
-final_fit
-collect_metrics(final_fit)
-extract_workflow(final_fit)
+targets::tar_load(names = c(rf_spec, rf_fit_resample_res, lp_final_fit))
+# rf_spec
+collect_metrics(rf_fit_resample_res)
+lp_final_fit
+collect_metrics(lp_final_fit)
+extract_workflow(lp_final_fit)
 
-collect_predictions(final_fit) |>
+collect_predictions(lp_final_fit) |>
   group_by(id) |>
   lp_metrics(truth = gas, estimate = .pred_class)

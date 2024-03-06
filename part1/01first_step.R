@@ -8,7 +8,13 @@
 library(tidymodels)
 # tidymodelsで使う関数と他の関数が競合しない（tidymodelsを優先する）ようにする
 tidymodels_prefer()
-targets::tar_load(lp_supply)
+library(DALEX)
+library(conflicted)
+targets::tar_load(names = c(lp_supply,
+                            lp_split,
+                            lp_train, lp_test,
+                            lp_wflow,
+                            lp_perform))
 lp_supply |> count(gas)
 
 # lp_supply |>
@@ -23,13 +29,6 @@ lp_supply |> count(gas)
 
 
 # rsample -----------------------------------------------------------------
-set.seed(123)
-lp_split <-
-  initial_split(lp_supply, prop = 0.8, strata = gas)
-lp_train <- training(lp_split)
-glimpse(lp_train)
-lp_test <- testing(lp_split)
-
 list(lp_train, lp_test) |>
   purrr::map(~ dim(.x))
 
@@ -53,44 +52,53 @@ logistic_reg() |>
 # decision_tree() |>
 #   set_mode("classification")
 # parsnip::show_engines("decision_tree")
+# rpartを選択する
 
 # workflow ----------------------------------------------------------------
 # pre-processとmodelを組みあわせる
-tree_spec <-
-  decision_tree(cost_complexity = 0.002) |>
-  set_engine("rpart") |>
-  set_mode("classification")
 
-# tree_spec |>
-#   fit(gas ~ ., data = lp_train)
+  # tree_depth =
+  # min_n =
 
+
+targets::tar_load(names = c(tree_spec, tree_fit))
 # 同じ出力を得る
-lp_wflow <-
-  workflow() |>
-  add_formula(gas ~ .) |>
-  add_model(tree_spec)
-lp_wflow |>
-  fit(data = lp_train)
-tree_fit <-
-  workflow(gas ~ ., spec = tree_spec) |>
-  fit(data = lp_train)
+all.equal(
+  lp_wflow,
+  workflow(gas ~ ., spec = tree_spec)
+)
+waldo::compare(
+  tree_fit,
+  lp_wflow |>
+    fit(data = lp_train))
+
 # テストデータに対する予測
 predict(tree_fit, new_data = lp_test) |>
   count(.pred_class)
 lp_test |>
   count(gas)
 
+# 解釈
+targets::tar_load(tree_exp)
 tree_fit |>
   extract_fit_engine() |>
   rpart.plot::rpart.plot(roundint = FALSE)
 tree_fit |>
   extract_fit_engine() |>
   vip::vip()
+# 説明モデル分析
+# Global
+plot(lp_perform, geom = "roc")
+tree_effect <-
+  model_parts(tree_exp, type = "variable_importance")
+plot(tree_effect, show_boxplots = TRUE)
+# 重要度を損失関数の差分として評価
+model_parts(tree_exp, type = "difference") |>
+  plot(tree_effect, show_boxplots = FALSE)
 
-DALEXtra::explain_tidymodels(tree_fit,
-                   data = lp_test |>
-                     select(price,
-                            gas,
-                            above_floor, under_floor,
-                            dist_from_st, fire),
-                   y = lp_test$gas)
+# Local
+# 単一の観測に対してモデルがどのように動作するか
+predict(tree_exp, lp_test[1, ])
+plot(predict_parts(tree_exp, new_observation = lp_test[6, ]))
+plot(predict_parts(tree_exp, new_observation = lp_test[8, ]))
+plot(predict_parts(tree_exp, new_observation = lp_test[10, ]))

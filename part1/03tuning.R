@@ -1,33 +1,26 @@
-# source("part1/02evaluation.R")
+library(tidymodels)
+tidymodels_prefer()
+targets::tar_load(names = c(rf_tune_spec, rf_tune_wflow))
 # ハイパーパラメータ
 # tune
-rf_spec <-
-  rand_forest(min_n = tune(),
-              trees = tune(),
-              mode = "classification") |>
-  set_engine("randomForest")
+rf_tune_spec
+rf_tune_wflow
 
-rf_wflow <-
-  workflow(gas ~ ., rf_spec)
-rf_wflow
+targets::tar_load(names = c(lp_folds, rf_fit_tune_res))
+# all.equal(
+#   rf_fit_tune_res,
+#   {
+#     set.seed(123)
+#     tune_grid(
+#       rf_tune_wflow,
+#       lp_folds,
+#       grid = 5)
+#   }
+# )
 
-set.seed(123)
-rf_res <-
-  tune_grid(
-    rf_wflow,
-    lp_folds,
-    grid = 5
-  )
 # ref) fit_resamples()
 
-show_best(rf_res, metric = "roc_auc")
-
-best_parameter <-
-  select_best(rf_res, metric = "roc_auc")
-best_parameter
-
-rf_wflow <-
-  finalize_workflow(rf_wflow, best_parameter)
-final_fit <-
-  last_fit(rf_wflow, lp_split)
-collect_metrics(final_fit)
+show_best(rf_fit_tune_res, metric = "roc_auc")
+targets::tar_read(lp_tune_best_parameter)
+targets::tar_load(rf_final_fit)
+collect_metrics(rf_final_fit)
