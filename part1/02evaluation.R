@@ -52,9 +52,9 @@ tree_fit |>
 # 交差検証法の導入
 lp_folds$splits[1:3]
 
-targets::tar_load(names = c(tree_wflow, lp_fit_resample_res, lp_ctrl))
+targets::tar_load(names = c(tree_wflow, lp_fit_rs, lp_ctrl))
 # tree_wflow
-lp_fit_resample_res |>
+lp_fit_rs |>
   collect_metrics() |>
   select(.metric, mean, n)
 
@@ -63,12 +63,12 @@ targets::tar_load(names = c(lp_preds))
 lp_preds |>
   group_by(id) |>
   lp_metrics(truth = gas, estimate = .pred_class)
-# rm(lp_fit_resample_res_ctrl)
+# rm(lp_fit_rs_ctrl)
 
 # ランダムフォレスト
-targets::tar_load(names = c(rf_spec, rf_fit_resample_res, lp_final_fit))
+targets::tar_load(names = c(rf_spec, rf_fit_rs, lp_final_fit))
 # rf_spec
-collect_metrics(rf_fit_resample_res)
+collect_metrics(rf_fit_rs)
 lp_final_fit
 collect_metrics(lp_final_fit)
 extract_workflow(lp_final_fit)

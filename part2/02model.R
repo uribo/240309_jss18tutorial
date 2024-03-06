@@ -1,11 +1,12 @@
 library(tidymodels)
 tidymodels_prefer()
-targets::tar_load(names = c(lp_metrics, rf_fit_resample_res_sp, lpsp_final_fit))
-collect_metrics(rf_fit_resample_res_sp)
+targets::tar_load(names = c(lp_metrics, rf_fit_rs_sp, lpsp_final_fit))
+#################################
+collect_metrics(rf_fit_rs_sp)
 collect_metrics(lpsp_final_fit)
 show_best(lpsp_final_fit, metric = "accuracy")
 
-collect_predictions(rf_fit_resample_res_sp) |>
+collect_predictions(rf_fit_rs_sp) |>
   group_by(id) |>
   lp_metrics(truth = gas, estimate = .pred_class)
 

@@ -1,7 +1,7 @@
 library(targets)
 source(here::here("data-raw/lp.R"))
 tar_option_set(
-  packages = c("tidyverse", "conflicted",
+  packages = c("conflicted",
                "tidymodels",
                "mlr3verse", "paradox",
                "sf", "spatialsample"),
@@ -132,7 +132,7 @@ part1_tm <-
       vfold_cv(lp_train, v = 10, repeats = 2, strata = gas)
     ),
     tar_target(
-      lp_fit_resample_res,
+      lp_fit_rs,
       fit_resamples(tree_wflow, lp_folds)
     ),
     tar_target(
@@ -140,12 +140,12 @@ part1_tm <-
       control_resamples(save_pred = TRUE)
     ),
     tar_target(
-      lp_fit_resample_res_ctrl,
+      lp_fit_rs_ctrl,
       fit_resamples(tree_wflow, lp_folds, control = lp_ctrl)
     ),
     tar_target(
       lp_preds,
-      lp_fit_resample_res_ctrl |>
+      lp_fit_rs_ctrl |>
         collect_predictions()
     ),
     tar_target(
@@ -160,7 +160,7 @@ part1_tm <-
                rf_spec)
     ),
     tar_target(
-      rf_fit_resample_res,
+      rf_fit_rs,
       fit_resamples(rf_wflow, lp_folds, control = lp_ctrl)
     ),
     tar_target(
@@ -279,7 +279,7 @@ part2_tm <-
       }
     ),
     tar_target(
-      rf_fit_resample_res_sp,
+      rf_fit_rs_sp,
       fit_resamples(rf_wflow, lpsp_folds, control = lp_ctrl)
     ),
     tar_target(
