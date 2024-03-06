@@ -1,7 +1,5 @@
 # tidymodels --------------------------------------------------------------
 library(tidymodels)
-# tidymodelsで使う関数と他の関数が競合しない（tidymodelsを優先する）ようにする
-tidymodels_prefer()
 library(ranger)
 # library(censored) # 生存時間解析のためのparsnipの拡張（扱わない）
 # library(poissonreg)
@@ -16,6 +14,8 @@ library(bonsai) # 木モデルのためのparsnipの拡張
 
 # DALEX -------------------------------------------------------------------
 library(DALEX)
+library(ggpubr)
+# install_dependencies()
 apartments_lm <- lm(m2.price ~ ., data = apartments)
 anova(apartments_lm)
 

@@ -1,4 +1,5 @@
 library(tidymodels)
+tidymodels_prefer()
 library(sf)
 library(mapview)
 library(ggplot2)

@@ -6,6 +6,8 @@
 # 3. ランダムフォレスト
 ###############################
 library(tidymodels)
+# tidymodelsで使う関数と他の関数が競合しない（tidymodelsを優先する）ようにする
+tidymodels_prefer()
 source(here::here("data-raw/lp.R"))
 lp_supply |> count(gas)
 
