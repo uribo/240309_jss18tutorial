@@ -1,4 +1,4 @@
-library(tidyverse)
+library(dplyr)
 library(mlr3verse)
 mlr3verse_info()
 library(randomForest)
@@ -9,7 +9,7 @@ conflict_prefer("filter", "dplyr")
 conflict_prefer("lag", "dplyr")
 conflict_prefer("combine", "randomForest")
 conflict_prefer("explain", "DALEX")
-targets::tar_load(names = c(lp_supply))
+targets::tar_load(names = c(lp_supply_chr2fct, lp_task, lp_split_mlr))
 
 # 1. Tasks ----------------------------------------------------------------
 # データセット、扱う問題の種類（Target, Properties）を指定
@@ -20,18 +20,12 @@ task <-
 task$properties
 task$class_names
 mlr_tasks$get("penguins")
-task$data(rows = c(1, 5, 10), cols = task$feature_names) # data.table
-
-# autoplot(task, type = "pairs")
-
-lp_supply <-
-  lp_supply |>
-  mutate(across(where(is.character), as.factor))
 
 # 自前のタスクを定義
-lp_task <-
-  as_task_classif(lp_supply, target = "gas")
 lp_task
+# autoplot(lp_task, type = "pairs")
+lp_task$data(rows = c(1, 5, 10), cols = lp_task$feature_names) # data.table
+
 
 # 2. learners -------------------------------------------------------------
 # 学習モデルに関する情報（アルゴリズム、パラメータ、パッケージなど）
@@ -40,27 +34,32 @@ learner <-
 learner
 learner$param_set$values
 
-learner <-
-  lrn("classif.rpart", xval = 3, cp = 0.2, maxdepth = 5)
-learner$param_set$values
+targets::tar_load(names = c(tree_learner))
+tree_learner$param_set$values
+names(lp_split_mlr)
 
-split <-
-  partition(lp_task)
-names(split)
-
+# lp_supply_chr2fct |>
+#   count(gas) |>
+#   mutate(prop = n / sum(n))
+#
+# lp_task$data()[lp_split_mlr$train] |>
+#   count(gas) |>
+#   mutate(prop = n / sum(n))
+# lp_task$data()[lp_split_mlr$test] |>
+#   count(gas) |>
+#   mutate(prop = n / sum(n))
 
 # 学習器を用いて学習を実行する
-learner$train(lp_task, row_ids = split$train)
-learner$model
+tree_learner$train(lp_task, row_ids = lp_split_mlr$train)
+tree_learner$model
 
+tree_learner$predict(lp_task, row_ids = lp_split_mlr$test)$confusion
 prediction <-
-  learner$predict(lp_task, row_ids = split$test)
+  tree_learner$predict(lp_task, row_ids = lp_split_mlr$test)
 prediction
 
 # autoplot(prediction)
-
 prediction$confusion
-
 # 3. Evaluation -----------------------------------------------------------
 as.data.table(mlr_measures)[task_type == "classif" & predict_type == "response" & task_properties != "twoclass"] |>
   glimpse()
@@ -71,68 +70,83 @@ msr("classif.ce")
 prediction$score(msr("classif.acc"))
 prediction$score(msr("classif.ce"))
 
-measures <- msrs(c("classif.acc", "classif.ce"))
-prediction$score(measures)
+targets::tar_load(lp_metrics_mlr)
+prediction$score(lp_metrics_mlr)
 
 # モデルの解釈
 # 1. 変数重要度
 # library(iml)
 library(DALEX)
-exp <-
-  explain(learner,
-          data = lp_task$data(),
-          y = as.numeric(lp_task$truth()),
-          label = "rpart_classif")
+#   explain(tree_learner,
+#           data = lp_task$data(),
+#           y = as.numeric(lp_task$truth()),
+#           label = "rpart_classif")
 
-exp <-
-  DALEXtra::explain_mlr3(learner, data = lp_task$data(),
-             y = as.numeric(lp_task$truth()))
+# nrow(lp_task$data()[lp_split_mlr$test, ])
+# length(lp_task$truth()[lp_split_mlr$test])
+# length(as.numeric(lp_task$data()[lp_split_mlr$test, ][gas == TRUE][["gas"]]))
+# tree_exp_mlr <-
+#   DALEXtra::explain_mlr3(
+#   tree_learner,
+#   data = lp_task$data()[lp_split_mlr$test, ],
+#   y = as.numeric(lp_task$truth()[lp_split_mlr$test]),
+#   label = "lp_tree_mlr")
+# model_performance(tree_exp_mlr)
 
-model_performance(exp)
+#  DALEXtra::explain_mlr3(tree_learner, data = lp_task$data(), y = as.numeric(lp_task$truth()), label = "lp_tree_mlr")
 
 # 4. Resampling -----------------------------------------------------------
 # mlr_resamplings
 as.data.table(mlr_resamplings) |>
   as_tibble()
 
-# 2回の繰り返し、5分割交差検証
-rcv25 <-
-  rsmp("repeated_cv", repeats = 2, folds = 5)
-rcv25$instantiate(task)
+targets::tar_load(lp_folds_mlr)
+lp_folds_mlr$instantiate(lp_task)
 
 rr <-
-  resample(task, learner, rcv25)
+  resample(lp_task, learner, lp_folds_mlr)
 rr
 
-acc <- rr$score(msr("classif.ce"))
-acc[, .(iteration, classif.ce)]
-rr$aggregate(msr("classif.ce"))
+acc <- rr$score(lp_metrics_mlr)
+acc[, .(iteration, classif.specificity)]
+rr$aggregate(msr("classif.specificity"))
+# type = "histogram"
 autoplot(rr, measure = msr("classif.acc"), type = "boxplot")
+# ?mlr3viz:::autoplot.ResampleResult
 
 # 5. Tuning ----------------------------------------------------------------
+# detach("package:mlr3extralearners", character.only = TRUE)
+lrn() # 152
 library(mlr3extralearners)
-lrn()
+lrn() # 171
 
 lrn("classif.ksvm")$param_set |>
   as.data.table()
-learner <- lrn("classif.randomForest",
-               ntree = to_tune(500, 2000),
-               mtry = to_tune(1, 50))
-learner$param_set$ids()
+targets::tar_load(rf_tune_learner)
+rf_tune_learner$param_set$ids()
+rf_tune_learner$param_set$values
 
-instance = ti(
-  task = task,
-  learner = learner,
-  resampling = rsmp("cv", folds = 3),
-  measures = msr("classif.ce"),
-  terminator = trm("none")
-)
+instance <- ti(
+  task = lp_task,
+  learner = rf_tune_learner,
+  resampling = lp_folds_mlr,
+  measures = lp_metrics_mlr,
+  terminator = trm("none"))
 tnr("random_search")
-tnr("grid_search")
 
-tuner <- tnr("grid_search", resolution = 5, batch_size = 10)
-tuner
-tuner$param_set
+lp_tuner <- tnr("grid_search", resolution = 5, batch_size = 10)
+lp_tuner
+
+# run
+lp_tuner$optimize(instance)
+
+rf_tune_learner$param_set$values <-
+  instance$result_learner_param_vals
+rf_tune_learner$train(lp_task)
+as.data.table(instance$archive)
+
+
+# lp_tuner$param_set
 
 
 # 6. Feature selection ----------------------------------------------------

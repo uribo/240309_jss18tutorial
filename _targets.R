@@ -1,7 +1,7 @@
 library(targets)
 source(here::here("data-raw/lp.R"))
 tar_option_set(
-  packages = c("tidyverse", "tidymodels"),
+  packages = c("tidyverse", "conflicted", "tidymodels", "mlr3verse", "paradox"),
   seed = 123)
 
 lp_data <-
@@ -190,9 +190,48 @@ part1_tm <-
     )
   )
 
+part1_mlr <-
+  list(
+    tar_target(
+      lp_supply_chr2fct,
+      lp_supply |>
+        mutate(across(where(is.character), as.factor))
+    ),
+    tar_target(
+      lp_task,
+      as_task_classif(lp_supply_chr2fct, target = "gas")
+    ),
+    tar_target(
+      lp_split_mlr,
+      {
+        set.seed(123)
+        partition(lp_task, stratify = TRUE, ratio = 0.8)
+      }
+    ),
+    tar_target(
+      tree_learner,
+      lrn("classif.rpart", cp = 0.002)
+    ),
+    tar_target(
+      lp_metrics_mlr,
+      msrs(c("classif.acc", "classif.sensitivity", "classif.specificity"))
+    ),
+    tar_target(
+      lp_folds_mlr,
+      rsmp("repeated_cv", repeats = 2, folds = 5)
+    ),
+    tar_target(
+      rf_tune_learner,
+      mlr3extralearners::lrn("classif.randomForest",
+                             ntree = to_tune(500, 2000),
+                             mtry = to_tune(1, 50))
+    )
+  )
+
 list(
   lp_data,
-  part1_tm
+  part1_tm,
+  part1_mlr
 )
 
 # targets::tar_make()
