@@ -82,6 +82,10 @@ library(DALEX)
 #           y = as.numeric(lp_task$truth()),
 #           label = "rpart_classif")
 
+vip::vip(tree_learner$model)
+
+
+
 # nrow(lp_task$data()[lp_split_mlr$test, ])
 # length(lp_task$truth()[lp_split_mlr$test])
 # length(as.numeric(lp_task$data()[lp_split_mlr$test, ][gas == TRUE][["gas"]]))

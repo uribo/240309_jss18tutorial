@@ -11,7 +11,6 @@ library(bonsai) # 木モデルのためのparsnipの拡張
 # library(textrecipes)
 # library(themis)
 
-# DALEX -------------------------------------------------------------------
+# iml, vip, DALEX -------------------------------------------------------------------
 library(ggpubr)
 # DALEX::install_dependencies()
-# library(iml)
