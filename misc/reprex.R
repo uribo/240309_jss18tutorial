@@ -14,3 +14,7 @@ reprex({
   library(conflicted) # 関数の衝突が発生していると、優先順位を指定するように促すメッセージを出力してくれる
   conflict_scout() # 現在の衝突状況を確認（tidymodels内での競合）
 }, venue = "rtf")
+reprex({
+  targets::tar_load(names = c(lp_supply))
+  dplyr::glimpse(lp_supply)
+}, venue = "rtf", wd = getwd())
