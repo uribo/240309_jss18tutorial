@@ -1,6 +1,6 @@
 source("renv/activate.R")
 options(
-  reprex.highlight.hl_style  = "base16/github",
+  reprex.highlight.hl_style  = "base16/github", # github (light) or google-dark
   reprex.highlight.font      = "Hack",
   reprex.highlight.font_size = 36,
   datatable.print.topn = 3,
