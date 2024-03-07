@@ -71,9 +71,9 @@ lp_data <-
     tar_target(
       lp_supply_sf,
       landprice |>
-        select(names(lp_supply)) |>
-        mutate(gas = as.factor(gas)) |>
-        filter(!is.na(fire))
+        dplyr::select(names(lp_supply)) |>
+        dplyr::mutate(gas = as.factor(gas)) |>
+        dplyr::filter(!is.na(fire))
     )
   )
 
@@ -303,7 +303,8 @@ part2_mlr <-
     ),
     tar_target(
       lpsp_folds_mlr,
-      rsmp("repeated_spcv_coords", folds = 5, repeats = 100)
+      rsmp("repeated_spcv_coords", folds = 5, repeats = 100),
+      packages = "mlr3spatiotempcv"
     )
   )
 
