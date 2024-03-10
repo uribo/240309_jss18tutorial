@@ -108,19 +108,27 @@ part1_tm <-
     ),
     tar_target(
       tree_fit,
-      workflow(gas ~ ., spec = tree_spec) |>
+      tree_wflow |>
         fit(data = lp_train)
+    ),
+    tar_target(
+      tree_pred,
+      predict(tree_fit, new_data = lp_test)
     ),
     tar_target(
       tree_exp,
       DALEXtra::explain_tidymodels(tree_fit,
                                    data = lp_test,
-                                   y = as.numeric(lp_test$gas),
+                                   y = as.numeric(lp_test$gas)-1,
                                    label = "lp_tree")
     ),
     tar_target(
       lp_perform,
       DALEX::model_performance(tree_exp)
+    ),
+    tar_target(
+      lp_tree_augment,
+      augment(tree_fit, new_data = lp_train)
     ),
     tar_target(
       lp_metrics,
@@ -155,18 +163,41 @@ part1_tm <-
         set_engine("randomForest")
     ),
     tar_target(
+      lp_rec,
+      recipe(gas ~ ., data = lp_train) |>
+        step_zv(all_predictors()) |>
+        step_log(price, dist_from_st, offset = 0.01) |>
+        step_normalize(all_numeric_predictors()) |>
+        step_dummy(all_nominal_predictors())
+    ),
+    tar_target(
+      tree_wflow_with_rec,
+      tree_wflow |>
+        remove_formula() |>
+        add_recipe(lp_rec)
+    ),
+    tar_target(
+      wf_set_fit,
+      workflow_set(preproc = list(none = gas ~ ., prep = lp_rec),
+                   models = list(tree_spec, rf_spec),
+                   cross = TRUE) |>
+        workflow_map("fit_resamples",
+                     resamples = lp_folds)
+    ),
+    tar_target(
       rf_wflow,
-      workflow(gas ~ price + water + sewer + above_floor + under_floor + dist_from_st + fire,
-               rf_spec)
+      workflow() |>
+        add_model(rf_spec) |>
+        add_recipe(lp_rec)
     ),
     tar_target(
       rf_fit_rs,
       fit_resamples(rf_wflow, lp_folds, control = lp_ctrl)
     ),
-    tar_target(
-      lp_final_fit,
-      last_fit(rf_wflow, lp_split)
-    ),
+    # tar_target(
+    #   lp_final_fit,
+    #   last_fit(rf_wflow, lp_split)
+    # ),
     tar_target(
       rf_tune_spec,
       rand_forest(min_n = tune(),
@@ -176,7 +207,9 @@ part1_tm <-
     ),
     tar_target(
       rf_tune_wflow,
-      workflow(gas ~ ., rf_tune_spec)
+      workflow() |>
+        add_model(rf_tune_spec) |>
+        add_recipe(lp_rec)
     ),
     tar_target(
       rf_fit_tune_res,
@@ -305,6 +338,12 @@ part2_mlr <-
       lpsp_folds_mlr,
       rsmp("repeated_spcv_coords", folds = 5, repeats = 100),
       packages = "mlr3spatiotempcv"
+    ),
+    tar_target(
+      rr_spcv_rf,
+      resample(task = lpsp_task,
+               learner = lrn("classif.ranger"),
+               resampling = lpsp_folds_mlr)
     )
   )
 
