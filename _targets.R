@@ -400,12 +400,76 @@ part2_mlr <-
     )
   )
 
+part2_aoa <-
+  list(
+    tar_target(
+      f,
+      # under_floor, fireは除く
+      formula(gas ~ sewer + price + above_floor + dist_from_st)
+    ),
+    tar_target(
+      rf_fit,
+      workflow() |>
+        add_formula(f) |>
+        add_model(rf_spec) |> # rf_spec or tree_spec
+        fit(data = lp_train)
+    ),
+    tar_target(
+      importance,
+      vip::vi_permute(
+        rf_fit,
+        target = "gas",
+        metric = "accuracy",
+        pred_wrapper = function(object, newdata) {
+          predict(object, new_data = newdata)$.pred_class
+        },
+        train = lp_train |>
+          select(gas, sewer, price, above_floor, dist_from_st))
+    ),
+    tar_target(
+      lp_aoa,
+      waywiser::ww_area_of_applicability(f,
+                               lp_train |>
+                                 mutate(gas = as.numeric(gas)-1,
+                                        sewer = as.numeric(sewer),
+                                        fire = as.numeric(as.factor(fire))),
+                               lp_test |>
+                                 mutate(gas = as.numeric(gas)-1,
+                                        sewer = as.numeric(sewer),
+                                        fire = as.numeric(as.factor(fire))),
+                               importance = importance),
+      packages = "waywiser"
+    ),
+    tar_target(
+      lp_supply_aoa,
+        bind_cols(
+          lp_supply_sf |>
+            mutate(gas = as.numeric(gas)-1,
+                   sewer = as.numeric(sewer)),
+          predict(lp_aoa, lp_supply_sf |>
+                    mutate(gas = as.numeric(gas)-1,
+                           sewer = as.numeric(sewer))))
+    ),
+    tar_target(
+      lp_supply_shikoku_aoa,
+      bind_cols(
+        lp_supply_sf_shikoku |>
+          mutate(gas = as.numeric(gas)-1,
+                 sewer = as.numeric(sewer)),
+        predict(lp_aoa, lp_supply_sf_shikoku |>
+                  mutate(gas = as.numeric(gas)-1,
+                         sewer = as.numeric(sewer)))
+      )
+    )
+  )
+
 list(
   lp_data,
   part1_tm,
   part1_mlr,
   part2_tm,
-  part2_mlr
+  part2_mlr,
+  part2_aoa
 )
 
 # targets::tar_make()

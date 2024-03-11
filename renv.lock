@@ -77,6 +77,16 @@
       ],
       "Hash": "ac8b12951882c375d1a14f64c93e78f1"
     },
+    "FNN": {
+      "Package": "FNN",
+      "Version": "1.1.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "eaabdc7938aa3632a28273f53a0d226d"
+    },
     "GGally": {
       "Package": "GGally",
       "Version": "2.2.1",
@@ -316,6 +326,18 @@
         "utils"
       ],
       "Hash": "9fe98599ca456d6552421db0d6772d8f"
+    },
+    "boot": {
+      "Package": "boot",
+      "Version": "1.3-30",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "graphics",
+        "stats"
+      ],
+      "Hash": "96abeed416a286d4a0f52e550b612343"
     },
     "brew": {
       "Package": "brew",
@@ -617,6 +639,18 @@
       ],
       "Hash": "536dfe4ac4093b5d115caed7a1a7223b"
     },
+    "deldir": {
+      "Package": "deldir",
+      "Version": "2.0-4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "grDevices",
+        "graphics"
+      ],
+      "Hash": "24754fce82729ff85317dd195b6646a8"
+    },
     "diagram": {
       "Package": "diagram",
       "Version": "1.6.5",
@@ -690,6 +724,16 @@
         "stats"
       ],
       "Hash": "fd6209a5ad74d6791b54c6bbb3c324f6"
+    },
+    "dotCall64": {
+      "Package": "dotCall64",
+      "Version": "1.1-1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "80f374ef8500fcdc5d84a0345b837227"
     },
     "dplyr": {
       "Package": "dplyr",
@@ -777,6 +821,20 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "f7736a18de97dea803bde0a2daaafb27"
+    },
+    "fields": {
+      "Package": "fields",
+      "Version": "15.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "maps",
+        "methods",
+        "spam",
+        "viridisLite"
+      ],
+      "Hash": "66fa5a16464666772f4929f8f5b2fc71"
     },
     "flexmix": {
       "Package": "flexmix",
@@ -1656,6 +1714,18 @@
         "R"
       ],
       "Hash": "7ce2733a9826b3aeb1775d56fd305472"
+    },
+    "maps": {
+      "Package": "maps",
+      "Version": "3.4.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "graphics",
+        "utils"
+      ],
+      "Hash": "5f7886e53a3b39d4a110c7bd7fce9164"
     },
     "mapview": {
       "Package": "mapview",
@@ -2921,6 +2991,17 @@
       ],
       "Hash": "1a0cc0cec2915700e63fd0921085cf6a"
     },
+    "spData": {
+      "Package": "spData",
+      "Version": "2.3.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "sp"
+      ],
+      "Hash": "49704afce6839b2ac1c82c098feb7cc7"
+    },
     "spacefillr": {
       "Package": "spacefillr",
       "Version": "0.3.2",
@@ -2930,6 +3011,20 @@
         "Rcpp"
       ],
       "Hash": "30850588bdc225885f2417fb1e7c8ee3"
+    },
+    "spam": {
+      "Package": "spam",
+      "Version": "2.10-0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "Rcpp",
+        "dotCall64",
+        "grid",
+        "methods"
+      ],
+      "Hash": "ffe1f9e95a4375530747b268f82b5086"
     },
     "spatialsample": {
       "Package": "spatialsample",
@@ -2953,6 +3048,29 @@
         "vctrs"
       ],
       "Hash": "d525ec52c0708b331c457572120d92b6"
+    },
+    "spdep": {
+      "Package": "spdep",
+      "Version": "1.3-4",
+      "Source": "Repository",
+      "Repository": "r-spatial",
+      "Requirements": [
+        "R",
+        "boot",
+        "deldir",
+        "e1071",
+        "grDevices",
+        "graphics",
+        "methods",
+        "s2",
+        "sf",
+        "sp",
+        "spData",
+        "stats",
+        "units",
+        "utils"
+      ],
+      "Hash": "c46e604e85877784f3d10d5283f2bf4b"
     },
     "stringi": {
       "Package": "stringi",
@@ -3387,6 +3505,31 @@
         "R"
       ],
       "Hash": "fea474d578b1cbcb696ae6ac8bdcc439"
+    },
+    "waywiser": {
+      "Package": "waywiser",
+      "Version": "0.5.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "FNN",
+        "Matrix",
+        "R",
+        "dplyr",
+        "fields",
+        "glue",
+        "hardhat",
+        "purrr",
+        "rlang",
+        "sf",
+        "spdep",
+        "stats",
+        "tibble",
+        "tidyselect",
+        "vctrs",
+        "yardstick"
+      ],
+      "Hash": "c5650135268a5e1182a86ff24700f8e0"
     },
     "withr": {
       "Package": "withr",

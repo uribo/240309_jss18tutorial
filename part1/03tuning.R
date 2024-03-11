@@ -23,4 +23,7 @@ targets::tar_load(names = c(lp_folds, rf_fit_tune_res))
 show_best(rf_fit_tune_res, metric = "roc_auc")
 targets::tar_read(lp_tune_best_parameter)
 targets::tar_load(rf_final_fit)
+extract_recipe(rf_final_fit) # recipe
+extract_spec_parsnip(rf_final_fit) # spec (parsnip)
+extract_fit_parsnip(rf_final_fit)
 collect_metrics(rf_final_fit)

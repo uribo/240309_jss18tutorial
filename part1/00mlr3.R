@@ -107,13 +107,7 @@ as.data.table(mlr_resamplings) |>
 targets::tar_load(lp_folds_mlr)
 lp_folds_mlr$instantiate(lp_task)
 
-rr <-
-  resample(lp_task, learner, lp_folds_mlr)
-rr
 
-acc <- rr$score(lp_metrics_mlr)
-acc[, .(iteration, classif.specificity)]
-rr$aggregate(msr("classif.specificity"))
 # type = "histogram"
 autoplot(rr, measure = msr("classif.acc"), type = "boxplot")
 # ?mlr3viz:::autoplot.ResampleResult
