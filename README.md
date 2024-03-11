@@ -1,17 +1,17 @@
 Rユーザのための機械学習チュートリアル
 ================
 
-2024年3月9日に開催される[日本統計学会第18回春季集会](https://jss2024spring.ywstat.jp/)（成城大学）における企画セッション AM-B「Rユーザのための機械学習チュートリアル」で用いる資料を公開しています。
+2024年3月9日に開催された[日本統計学会第18回春季集会](https://jss2024spring.ywstat.jp/)（成城大学）における企画セッション AM-B「Rユーザのための機械学習チュートリアル」で用いる資料を公開しています。
 
 ## 構成
 
 ### 第一部: Rの機械学習フレームワークの紹介〜tidymodelsを中心に〜
 
-[slide], [code]
+[slide](https://speakerdeck.com/s_uryu/machine-learning-with-r2024), [code](https://github.com/uribo/240309_jss18tutorial/tree/main/part1)
 
 ### 第二部: 地理空間データの機械学習への適用
 
-[slide], [code]
+[slide](https://speakerdeck.com/s_uryu/machine-learning-for-spatial-data), [code](https://github.com/uribo/240309_jss18tutorial/tree/main/part2)
 
 ## データセット
 
