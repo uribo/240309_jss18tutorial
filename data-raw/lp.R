@@ -1,5 +1,5 @@
-if (length(list.files(here::here("data-raw"), recursive = TRUE, pattern = ".geojson$")) != 7L) {
-  seq.int(8, 14) |>
+if (length(list.files(here::here("data-raw"), recursive = TRUE, pattern = ".geojson$")) != 11L) {
+  c(seq.int(8, 14), seq.int(36, 39)) |>
     purrr::walk(
       function(x) {
         x <- sprintf("%02d", x)
